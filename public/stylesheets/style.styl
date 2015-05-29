@@ -1,6 +1,122 @@
-body
-  padding: 50px
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
-a
-  color: #00B7FF
+@import "partials/normalize";
 
+// Layout
+html {
+  font-size: 62.5%;
+}
+
+.row {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px dashed #aaa;
+  padding-top: 10px;
+  position: relative;
+}
+
+.btn {
+  display: block;
+  height: 32px;
+  background: #333;
+  color: white;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.flex {
+  display: flex;
+  &.space-between {
+    justify-content: space-between;
+  }
+}
+
+// Styling
+h1 {
+  background: crimson;
+  padding: 15px 5%;
+  color: white;
+}
+
+#container {
+  padding: 20px 5%;
+}
+
+.add {
+  background: none;
+  color: #333;
+  position: relative;
+  width: 70px;
+  height: 21px;
+  padding-top: 1px;
+  margin-top: 5px;
+  &:after {
+    content: "+";
+    position: absolute;
+    right: -5px;
+    top: -7px;
+    display: inline-block;
+    width: 33px;
+    height: 33px;
+    border-radius: 100%;
+    background: #333;
+    color: white;
+    font-size: 3rem;
+    box-sizing: border-box;
+    padding: 6px 0 0 10px;
+  }
+}
+
+.var-name {
+  width: 135px;
+  margin-right: 10px;
+}
+
+input {
+  box-sizing: border-box;
+  &[class*="-val"] {
+    width: 70px;
+  }
+  &+ select {
+    margin-left: 10px;
+  }
+}
+
+select {
+  height: 20px;
+}
+
+.swatch-list {
+  border: 1px solid #efefef;
+  padding: 0;
+  list-style: none;
+  li {
+    flex: 1;
+    padding: 5px;
+    &.dark-color {
+      color: #333;
+    }
+    &.light-color {
+      color: #eee
+    }
+  }
+}
+
+.font-sizes {
+  list-style: none;
+}
+
+
+#create-var-list {
+  width: 200px;
+  text-align: center;
+}
+
+.var-list {
+  width: 500px;
+  height: 500px;
+}
+
+.forms {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+}
