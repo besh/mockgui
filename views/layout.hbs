@@ -2,6 +2,23 @@
 <html>
   {{> header}}
   <body>
-    {{{body}}}
+    <h1>Mock GUI</h1>
+    <div id="container">
+
+      <section class="flex space-between forms">
+        {{> color_form}}
+        {{> font_form}}
+        {{> buttons_inputs_form}}
+      </section>
+
+      <section class="generated-gui">
+        {{> swatch_list}}
+        {{> fonts}}
+      </section>
+
+      <a class="btn" id="create-var-list">Create variable list</a>
+      <textarea class="var-list"></textarea>
+    </div>
+    {{> footer}}
   </body>
 </html>
