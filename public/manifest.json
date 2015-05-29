@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Mock GUI",
+  "description": "Generates a mock GUI and outputs stylus variables from user-input",
+  "version": "0.1",
+  "icons": {
+    "256": "images/icon_256.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["js/background.js"]
+    }
+  }
+}
