@@ -2,8 +2,69 @@
   $(document).ready(function() {
     var $baseColorsForm = $('#base-colors');
     var $fontForm       = $('#base-fonts');
+    var $toggleBtn      = $('.toggle-mode');
     // Force num only on pixel value inputs
     $('.pixel-val, .rem-val').forceNumeric();
+
+    chrome.storage.local.get(null, function (data) {
+      console.info(data)
+      if (isEmpty(data)) {
+        console.log('no data')
+        toggleMode('create');
+      } else {
+        toggleMode('edit');
+        init(data);
+      }
+    });
+
+    function init(sites) {
+      var options = '';
+      $.each(sites, function(key) {
+        options += '<option>' + key + '</option>';
+      });
+      $('.selected-site-name').html(options);
+    }
+
+    $('.new-site-button').on('click', function() {
+      var key = $('.new-site input').val();
+      if (key !== '') {
+        chrome.storage.local.get(key, function(val) {
+          // Create property if does not exist (yet)
+          if (typeof val[key] != 'string') {
+            val[key] = '';
+          }
+          // Append value of param1
+          val[key] = true;
+          // Save data
+          chrome.storage.local.set(val);
+        });
+      } else {
+        console.log('enter site name to get started')
+      }
+    });
+
+    function toggleMode(string) {
+      var $edit   = $('.edit-mode');
+      var $create = $('.new-site');
+      var text    = $toggleBtn.text();
+      if (string === 'create') {
+        $edit.removeClass('on');
+        $create.addClass('on');
+        $toggleBtn.text('Edit');
+      } else if (string === 'edit') {
+        $edit.addClass('on');
+        $create.removeClass('on');
+        $toggleBtn.text('Create');
+      } else {
+        $edit.toggleClass('on');
+        $create.toggleClass('on')
+        if (text === 'Edit') {
+          $toggleBtn.text('Create');
+        } else {
+          $toggleBtn.text('Edit');
+        }
+      }
+    }
 
     function updateColorList() {
       var options      = '';
@@ -76,6 +137,15 @@
       $('.swatch-list').html(swatches);
     }
 
+    function isEmpty(obj) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     function generateVarList() {
       var varList = '';
 
@@ -129,6 +199,10 @@
       return '$' + string.replace(/ /, '-').toLowerCase();
     }
 
+    function makeKey(string) {
+      return string.replace(/ /, '_').toLowerCase();
+    }
+
     // TODO: Better rem conversion
     function crappyRemConversion(string) {
       if (string.length > 1) {
@@ -150,18 +224,36 @@
 
     // Click events
     $baseColorsForm.find('.update').on('click', function() {
+      $baseColorsForm.find('.new').each(function() {
+        var $this = $(this);
+        var key = makeKey($this.find('.var-name').val());
+        var val = $this.find('.color-val').val();
+
+        objTemplate.colors[key] = val;
+
+        chrome.storage.local.set(null, function (data) { console.info(data) });
+
+
+
+        $this.removeClass('new');
+      });
       updateColorList();
       generateSwatches($baseColorsForm.find('.row'));
       generateVarList();
     });
 
     $('.color-val').on('keyup', function() {
-      if ($(this).val().length === 3 || $(this).val().length === 6) {
-        $(this).attr('style', '').css('background-color', '#' + $(this).val());
+      var $this = $(this);
+
+      if (!$this.parent('.row').hasClass('new')) {
+        $this.parent('.row').addClass('new');
+      }
+      if ($this.val().length === 3 || $this.val().length === 6) {
+        $this.attr('style', '').css('background-color', '#' + $this.val());
       }
 
-      if ($(this).val().length === 0) {
-        $(this).attr('style', '');
+      if ($this.val().length === 0) {
+        $this.attr('style', '');
       }
     });
 
@@ -170,7 +262,7 @@
 
       // TODO: Add clientside handlebars to handle templates
       var newRow = '';
-      newRow    += '<div class="row">'
+      newRow    += '<div class="row new">'
                 +   '<input type="text" class="var-name" placeholder="Some other color">'
                 +   '<input type="tel" placeholder="efefef" maxlength="6" class="color-val">'
                 +  '</div>';
@@ -188,9 +280,36 @@
       generateVarList();
     });
 
+    $toggleBtn.on('click', function() {
+      toggleMode();
+    })
+
   })
 })(jQuery);
 
+var objTemplate = {
+  "colors": {
+    "primary_color" : "efefef",
+    "secondary_color" : "000"
+  },
+  "font_family": "helvetica",
+  "font_sizes": {
+    "small": '1rem',
+    "regular": '1.3rem'
+  },
+  "form_fields": {
+    "color": "seondary",
+    "border": {
+      "color": "primary",
+      "size": "1px"
+    }
+  }
+}
+
+// Simulate fetching from chrome storage
+$.each(objTemplate.colors, function(key, value) {
+ $('input[name="' + key + '"]').val(value);
+})
 
 // forceNumeric() plug-in implementation
 jQuery.fn.forceNumeric = function () {
