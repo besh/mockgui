@@ -33,9 +33,19 @@ html {
 
 // Styling
 h1 {
-  background: crimson;
+  background: url('../images/background_repeat.png') repeat-x;
   padding: 15px 5%;
+  height: 95px;
+  background-size: 100% 95px;
   color: white;
+  margin: 0;
+  img {
+    width: 100px;
+    margin-left: -50px;
+    position: absolute;
+    left: 50%;
+    top: 43px;
+  }
 }
 
 #container {
@@ -120,4 +130,45 @@ select {
 .forms {
   border-bottom: 1px solid #ccc;
   padding-bottom: 20px;
+}
+
+.new-site {
+  position: relative;
+  transition: all .5s;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 15%;
+  input {
+    height: 100px;
+    width: 50%;
+    padding-left: 10px;
+    font-size: 30px;
+    text-transform: uppercase;
+    color: #888;
+  }
+}
+
+.new-site-button {
+  height: 100px;
+  display: block;
+  width: 24%;
+  color: white;
+  font-size: 30px;
+  text-transform: uppercase;
+  line-height: 3;
+  text-align: center;
+}
+
+.edit-mode {
+  position: relative;
+  transition: all .2s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.on {
+  opacity: 1;
+  pointer-events: all;
 }
