@@ -6,6 +6,9 @@
   "icons": {
     "256": "images/icon_256.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "app": {
     "background": {
       "scripts": ["js/background.js"]
