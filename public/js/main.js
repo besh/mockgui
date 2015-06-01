@@ -74,39 +74,6 @@
       $appendAfter.after(newRow);
     }
 
-    $('.new-site-button').on('click', function() {
-      var key = $('.new-site input').val();
-      if (key !== '') {
-        chrome.storage.local.get(null, function (data) {
-          // Check if any sites have been created yet
-          if (typeof data.site === 'undefined') {
-            data.site = {};
-          }
-
-          // check if key exists already
-          if (typeof data.site[key] !== 'undefined') {
-            console.log('site already exists!')
-          } else {
-            // create the site
-            data.site[key] = {};
-          }
-
-          // set active site to newly created site
-          data.active = key;
-
-          // Save data
-          chrome.storage.local.set(data);
-          init(data);
-          setActiveSite(data.active);
-        });
-
-        toggleMode('edit');
-
-      } else {
-        console.log('enter site name to get started')
-      }
-    });
-
     function toggleMode(string) {
       var $edit        = $('.edit-mode');
       var $create      = $('.new-site');
@@ -292,26 +259,59 @@
       return fontColorClass;
     }
 
+    //--------------------------------------------
     // Click events
+    //--------------------------------------------
+    $('.new-site-button').on('click', function() {
+      var key = $('.new-site input').val();
+      if (key !== '') {
+        chrome.storage.local.get(null, function (data) {
+          // Check if any sites have been created yet
+          if (typeof data.site === 'undefined') {
+            data.site = {};
+          }
+
+          // check if key exists already
+          if (typeof data.site[key] !== 'undefined') {
+            console.log('site already exists!')
+          } else {
+            // create the site
+            data.site[key] = {};
+          }
+
+          // set active site to newly created site
+          data.active = key;
+
+          // Save data
+          chrome.storage.local.set(data);
+          init(data);
+          setActiveSite(data.active);
+        });
+
+        toggleMode('edit');
+
+      } else {
+        console.log('enter site name to get started')
+      }
+    });
+
     $baseColorsForm.find('.update').on('click', function() {
       chrome.storage.local.get(null, function (data) {
         var active = data.active
 
+        // If colors doesn't exist yet, create it
         if (typeof data.site[active].colors === 'undefined') {
           data.site[active].colors = {};
         }
 
+        // Find any new color vals and save them to chrome storage
         $baseColorsForm.find('.new').each(function() {
           var $this = $(this);
           var key   = $this.find('.var-name').val() || $this.find('.var-name').text();
           var val   = $this.find('.color-val').val();
 
-          console.log(key, val)
-
           data.site[active].colors[key] = val;
-
           chrome.storage.local.set(data);
-
           $this.removeClass('new');
         });
       });
