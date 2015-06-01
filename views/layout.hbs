@@ -8,6 +8,7 @@
 
     <section class="tools flex space-between">
       <select class="selected-site-name"></select>
+      <a class="btn toggle-output">Stylus Output</a>
       <a class="btn toggle-mode">Toggle</a>
     </section>
 
@@ -31,8 +32,11 @@
       </section>
 
       <section class="output">
-        <a class="btn" id="create-var-list">Create variable list</a>
-        <textarea class="var-list"></textarea>
+        <div class="output-modal">
+          <a class="close-btn">&times;</a>
+          <textarea class="var-list"></textarea>
+        </div>
+        <div class="background"></div>
       </section>
 
     </div>

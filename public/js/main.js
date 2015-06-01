@@ -374,6 +374,10 @@
       });
     });
 
+    $('.toggle-output, .output .close-btn, .output .background').on('click', function() {
+      $('.output').toggleClass('on');
+    });
+
   })
 })(jQuery);
 

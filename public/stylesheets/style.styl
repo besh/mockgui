@@ -161,10 +161,58 @@ select {
 .var-list {
   width: 500px;
   height: 500px;
+  border: 10px solid #333;
+  box-shadow: 0 3px 5px;
 }
 
 .output {
-  display: none;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transition: all .23s;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  &.on {
+    pointer-events: all;
+    opacity: 1;
+    .output-modal {
+      top: 20%;
+    }
+  }
+  .background {
+    opacity: .7;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: black;
+  }
+  .close-btn {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    background-color: crimson;
+    border-radius: 100%;
+    font-size: 3rem;
+    width: 40px;
+    height: 40px;
+    padding: 1px 0 0 5px;
+    color: white;
+    border: 5px solid #333;
+  }
+}
+
+.output-modal {
+  transition: all .23s;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  margin-left: -200px;
+  z-index: 500;
 }
 
 .forms {
@@ -249,7 +297,7 @@ select {
   pointer-events: none;
 }
 
-.toggle-mode {
+.toggle-mode, .toggle-output {
   width: 100px;
   text-align: center;
   background: #efefef;
@@ -258,6 +306,10 @@ select {
   letter-spacing: 3px;
   border-radius: 5px;
   border-bottom: 2px solid #888;
+}
+
+.toggle-output {
+  width: 160px;
 }
 
 .on {
