@@ -43,15 +43,21 @@
           return $(this).text() === activeSite;
         }).prop('selected', true);
 
-        // retrieve site data and fill inputs
-        $.each(data.site[activeSite].colors, function(key, value) {
-          $('input[name="' + key + '"]').val(value);
+        $('input[class*="-val"]').val('');
 
-          // if an input is not found, assume it's not a base color and create a new template
-          if (!$('input[name="' + key + '"]').length) {
-            createTemplate($baseColorsForm, 'color', key, value);
-          }
-        });
+        // retrieve site data and fill inputs
+        if (data.site[activeSite].colors) {
+          $.each(data.site[activeSite].colors, function(key, value) {
+            $('input[name="' + key + '"]').val(value);
+
+            // if an input is not found, assume it's not a base color and create a new template
+            if (!$('input[name="' + key + '"]').length) {
+              createTemplate($baseColorsForm, 'color', key, value);
+            }
+          });
+        }
+
+        $('.update').trigger('click');
       });
     }
 
@@ -79,26 +85,27 @@
       var $create      = $('.new-site');
       var $createInput = $create.find('input');
       var text         = $toggleBtn.text();
+      var $siteSelect  = $('.selected-site-name');
 
       if (string === 'create') {
         $edit.removeClass('on');
         $create.addClass('on');
         $toggleBtn.text('Edit');
-        $createInput.focus();
+        $siteSelect.hide();
+
       } else if (string === 'edit') {
         $edit.addClass('on');
         $create.removeClass('on');
         $toggleBtn.text('Create');
-        $createInput.blur();
+        $siteSelect.addClass('on');
       } else {
         $edit.toggleClass('on');
-        $create.toggleClass('on')
+        $create.toggleClass('on');
+        $siteSelect.toggleClass('on');
         if (text === 'Edit') {
           $toggleBtn.text('Create');
-          $createInput.focus();
         } else {
           $toggleBtn.text('Edit');
-          $createInput.blur();
         }
       }
     }
@@ -316,6 +323,7 @@
         });
       });
 
+      $('.generated-gui').addClass('on');
       updateColorList();
       generateSwatches($baseColorsForm.find('.row'));
       generateVarList();

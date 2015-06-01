@@ -271,6 +271,9 @@ body {
 .flex.space-between {
   justify-content: space-between;
 }
+.flex.wrap {
+  flex-wrap: wrap;
+}
 h1 {
   background: url("../images/background_repeat.png") repeat-x;
   padding: 15px 5%;
@@ -278,16 +281,18 @@ h1 {
   background-size: 100% 95px;
   color: #fff;
   margin: 0;
+  position: relative;
+  z-index: 100;
 }
 h1 img {
   width: 100px;
   margin-left: -50px;
-  position: absolute;
+  position: relative;
   left: 50%;
-  top: 43px;
+  top: 28px;
 }
 #container {
-  padding: 20px 5%;
+  padding: 0 5%;
 }
 .add {
   background: none;
@@ -330,13 +335,14 @@ select {
   height: 20px;
 }
 .swatch-list {
-  border: 1px solid #efefef;
   padding: 0;
+  margin: 0;
   list-style: none;
 }
 .swatch-list li {
-  flex: 1;
+  width: 50%;
   padding: 5px;
+  border: 1px solid #000;
 }
 .swatch-list li.dark-color {
   color: #333;
@@ -344,8 +350,33 @@ select {
 .swatch-list li.light-color {
   color: #eee;
 }
+.generated-gui {
+  position: absolute;
+  left: -30%;
+  background: #1d1f20;
+  height: 100%;
+  margin: 0;
+  width: 20%;
+  transition: all 0.23s;
+}
+.generated-gui.on {
+  left: 0;
+}
+.generated-gui.on+ .forms {
+  margin-left: 20%;
+}
+.generated-gui h2 {
+  padding: 10px;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: normal;
+  background: #111;
+  margin: 0;
+}
 .font-sizes {
   list-style: none;
+  padding-left: 10px;
+  color: #fff;
 }
 #create-var-list {
   width: 200px;
@@ -355,14 +386,35 @@ select {
   width: 500px;
   height: 500px;
 }
+.output {
+  display: none;
+}
 .forms {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 20px;
+  transition: all 0.23s;
+  padding-top: 20px;
+}
+.tools {
+  background: #1d1f20;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 10px;
+  position: relative;
+  z-index: 100;
+}
+.tools select {
+  width: 300px;
+  height: 30px;
+  background: #efefef;
+  border: none;
+  font-size: 1.6rem;
+  color: #333;
+  text-transform: capitalize;
 }
 .new-site {
   position: absolute;
   width: 100%;
-  margin-top: 0;
+  top: 0;
+  left: 0;
   transition: all 0.5s;
   opacity: 0;
   pointer-events: none;
@@ -376,25 +428,52 @@ select {
   font-size: 30px;
   text-transform: uppercase;
   color: #888;
+  transition: all 0.23s;
+  background: #efefef;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid #efefef;
+}
+.new-site input:focus {
+  background: #fff;
 }
 .new-site.on {
-  margin-top: 15%;
+  top: 45%;
+}
+.selected-site-name {
+  transition: all 0.23s;
+  opacity: 0;
+}
+.selected-site-name.on {
+  opacity: 1;
 }
 .new-site-button {
   height: 100px;
   display: block;
-  width: 24%;
-  color: #fff;
+  width: 300px;
   font-size: 30px;
   text-transform: uppercase;
   line-height: 3;
   text-align: center;
+  border-radius: 0 10px 10px 0;
+  border: none;
+  border-bottom: 4px solid #ce0950;
+  background: #da5d5d;
+  color: rgba(255,255,255,0.7);
 }
 .edit-mode {
-  position: relative;
   transition: all 0.2s;
   opacity: 0;
   pointer-events: none;
+}
+.toggle-mode {
+  width: 100px;
+  text-align: center;
+  background: #efefef;
+  border: none;
+  color: #444;
+  letter-spacing: 3px;
+  border-radius: 5px;
+  border-bottom: 2px solid #888;
 }
 .on {
   opacity: 1;

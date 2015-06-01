@@ -5,35 +5,35 @@
     <h1>
       <img src="images/logo.png">
     </h1>
+
+    <section class="tools flex space-between">
+      <select class="selected-site-name"></select>
+      <a class="btn toggle-mode">Toggle</a>
+    </section>
+
     <div id="container">
-
-      <section class="tools flex space-between">
-        <select class="selected-site-name"></select>
-        <a class="btn toggle-mode">Toggle</a>
-      </section>
-
-      <section class="new-site">
-        <input type="text">
-        <a class="new-site-button btn">Create</a>
-      </section>
-
       <div class="edit-mode">
-        <section class="flex space-between forms">
-          {{> color_form}}
-          {{> font_form}}
-          {{> buttons_inputs_form}}
-        </section>
-
         <section class="generated-gui">
           {{> swatch_list}}
           {{> fonts}}
         </section>
 
-        <section class="output">
-          <a class="btn" id="create-var-list">Create variable list</a>
-          <textarea class="var-list"></textarea>
+        <section class="flex space-between forms">
+          {{> color_form}}
+          {{> font_form}}
+          {{> buttons_inputs_form}}
         </section>
       </div>
+
+      <section class="new-site">
+        <input type="text" placeholder="Awesome new site">
+        <a class="new-site-button btn">Create</a>
+      </section>
+
+      <section class="output">
+        <a class="btn" id="create-var-list">Create variable list</a>
+        <textarea class="var-list"></textarea>
+      </section>
 
     </div>
     {{> footer}}

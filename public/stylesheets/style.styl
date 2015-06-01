@@ -33,6 +33,9 @@ body {
   &.space-between {
     justify-content: space-between;
   }
+  &.wrap {
+    flex-wrap: wrap;
+  }
 }
 
 // Styling
@@ -43,17 +46,19 @@ h1 {
   background-size: 100% 95px;
   color: white;
   margin: 0;
+  position: relative;
+  z-index: 100;
   img {
     width: 100px;
     margin-left: -50px;
-    position: absolute;
+    position: relative;
     left: 50%;
-    top: 43px;
+    top: 28px;
   }
 }
 
 #container {
-  padding: 20px 5%;
+  padding: 0 5%;
 }
 
 .add {
@@ -101,12 +106,13 @@ select {
 }
 
 .swatch-list {
-  border: 1px solid #efefef;
   padding: 0;
+  margin: 0;
   list-style: none;
   li {
-    flex: 1;
+    width: 50%;
     padding: 5px;
+    border: 1px solid black;
     &.dark-color {
       color: #333;
     }
@@ -116,8 +122,34 @@ select {
   }
 }
 
+.generated-gui {
+  position: absolute;
+  left: -30%;
+  background: #1d1f20;
+  height: 100%;
+  margin: 0;
+  width: 20%;
+  transition: all .23s;
+  &.on {
+    left: 0;
+    &+ .forms {
+      margin-left: 20%;
+    }
+  }
+  h2 {
+    padding: 10px;
+    color: white;
+    font-size: 1.6rem;
+    font-weight: normal;
+    background: #111;
+    margin: 0;
+  }
+}
+
 .font-sizes {
   list-style: none;
+  padding-left: 10px;
+  color: white;
 }
 
 
@@ -131,15 +163,38 @@ select {
   height: 500px;
 }
 
+.output {
+  display: none;
+}
+
 .forms {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 20px;
+  transition: all .23s;
+  padding-top: 20px;
+}
+
+.tools {
+  background: #1d1f20;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 10px;
+  position: relative;
+  z-index: 100;
+  select {
+    width: 300px;
+    height: 30px;
+    background: #efefef;
+    border: none;
+    font-size: 1.6rem;
+    color: #333;
+    text-transform: capitalize;
+  }
 }
 
 .new-site {
   position: absolute;
   width: 100%;
-  margin-top: 0;
+  top: 0;
+  left: 0;
   transition: all .5s;
   opacity: 0;
   pointer-events: none;
@@ -152,28 +207,57 @@ select {
     font-size: 30px;
     text-transform: uppercase;
     color: #888;
+    transition: all .23s;
+    background: #efefef;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #efefef;
+    &:focus {
+      background: white;
+    }
   }
   &.on {
-    margin-top: 15%;
+    top: 45%;
+  }
+}
+
+.selected-site-name {
+  transition: all .23s;
+  opacity: 0;
+  &.on {
+    opacity: 1;
   }
 }
 
 .new-site-button {
   height: 100px;
   display: block;
-  width: 24%;
-  color: white;
+  width: 300px;
   font-size: 30px;
   text-transform: uppercase;
   line-height: 3;
   text-align: center;
+  border-radius: 0 10px 10px 0;
+  border: none;
+  border-bottom: 4px solid #CE0950;
+  background: #DA5D5D;
+  color: rgba(255, 255,255, 0.7);
 }
 
 .edit-mode {
-  position: relative;
   transition: all .2s;
   opacity: 0;
   pointer-events: none;
+}
+
+.toggle-mode {
+  width: 100px;
+  text-align: center;
+  background: #efefef;
+  border: none;
+  color: #444;
+  letter-spacing: 3px;
+  border-radius: 5px;
+  border-bottom: 2px solid #888;
 }
 
 .on {
