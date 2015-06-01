@@ -133,13 +133,14 @@ select {
 }
 
 .new-site {
-  position: relative;
+  position: absolute;
+  width: 100%;
+  margin-top: 0;
   transition: all .5s;
   opacity: 0;
   pointer-events: none;
   display: flex;
   justify-content: center;
-  margin-top: 15%;
   input {
     height: 100px;
     width: 50%;
@@ -147,6 +148,9 @@ select {
     font-size: 30px;
     text-transform: uppercase;
     color: #888;
+  }
+  &.on {
+    margin-top: 15%;
   }
 }
 

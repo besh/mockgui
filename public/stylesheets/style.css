@@ -357,13 +357,14 @@ select {
   padding-bottom: 20px;
 }
 .new-site {
-  position: relative;
+  position: absolute;
+  width: 100%;
+  margin-top: 0;
   transition: all 0.5s;
   opacity: 0;
   pointer-events: none;
   display: flex;
   justify-content: center;
-  margin-top: 15%;
 }
 .new-site input {
   height: 100px;
@@ -372,6 +373,9 @@ select {
   font-size: 30px;
   text-transform: uppercase;
   color: #888;
+}
+.new-site.on {
+  margin-top: 15%;
 }
 .new-site-button {
   height: 100px;
@@ -385,7 +389,7 @@ select {
 }
 .edit-mode {
   position: relative;
-  transition: all 0.5s;
+  transition: all 0.2s;
   opacity: 0;
   pointer-events: none;
 }

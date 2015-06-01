@@ -3,13 +3,16 @@
     var $baseColorsForm = $('#base-colors');
     var $fontForm       = $('#base-fonts');
     var $toggleBtn      = $('.toggle-mode');
+    var $siteSelect     = $('.selected-site-name');
+
     // Force num only on pixel value inputs
     $('.pixel-val, .rem-val').forceNumeric();
 
+    // Check chrome storage on load
     chrome.storage.local.get(null, function (data) {
       console.info(data)
-      if (isEmpty(data)) {
-        console.log('no data')
+      if (isEmpty(data.site)) {
+        console.log('no sites!')
         toggleMode('create');
       } else {
         toggleMode('edit');
@@ -17,51 +20,82 @@
       }
     });
 
-    function init(sites) {
+    // init the sites
+    function init(data) {
       var options = '';
-      $.each(sites, function(key) {
+      $.each(data.site, function(key) {
         options += '<option>' + key + '</option>';
       });
-      $('.selected-site-name').html(options);
+
+      $siteSelect.html(options);
+      setActiveSite(data.active);
+    }
+
+    // Select the option with the site that matches the "active" key in chrome storage
+    function setActiveSite(activeSite) {
+      $siteSelect.find('option').filter(function() {
+        return $(this).text() === activeSite;
+      }).prop('selected', true);
     }
 
     $('.new-site-button').on('click', function() {
       var key = $('.new-site input').val();
       if (key !== '') {
-        chrome.storage.local.get(key, function(val) {
-          // Create property if does not exist (yet)
-          if (typeof val[key] != 'string') {
-            val[key] = '';
+        chrome.storage.local.get(null, function (data) {
+          // Check if any sites have been created yet
+          if (typeof data.site === 'undefined') {
+            data.site = {};
           }
-          // Append value of param1
-          val[key] = true;
+
+          // check if key exists already
+          if (typeof data.site[key] !== 'undefined') {
+            console.log('site already exists!')
+          } else {
+            // create the site
+            data.site[key] = {};
+          }
+
+          // set active site to newly created site
+          data.active = key;
+
           // Save data
-          chrome.storage.local.set(val);
+          chrome.storage.local.set(data);
+          init(data);
+          setActiveSite(data.active);
         });
+
+        toggleMode('edit');
+
       } else {
         console.log('enter site name to get started')
       }
     });
 
     function toggleMode(string) {
-      var $edit   = $('.edit-mode');
-      var $create = $('.new-site');
-      var text    = $toggleBtn.text();
+      var $edit        = $('.edit-mode');
+      var $create      = $('.new-site');
+      var $createInput = $create.find('input');
+      var text         = $toggleBtn.text();
+
       if (string === 'create') {
         $edit.removeClass('on');
         $create.addClass('on');
         $toggleBtn.text('Edit');
+        $createInput.focus();
       } else if (string === 'edit') {
         $edit.addClass('on');
         $create.removeClass('on');
         $toggleBtn.text('Create');
+        $createInput.blur();
       } else {
         $edit.toggleClass('on');
         $create.toggleClass('on')
         if (text === 'Edit') {
           $toggleBtn.text('Create');
+          $createInput.focus();
         } else {
           $toggleBtn.text('Edit');
+          $createInput.blur();
         }
       }
     }
@@ -280,9 +314,22 @@
       generateVarList();
     });
 
+    // Toggle the mode between create and editing
     $toggleBtn.on('click', function() {
       toggleMode();
     })
+
+    $siteSelect.on('change', function() {
+      // Define val outside of get call to avoid scope issues
+      var val = $(this).val();
+
+      // Save selected site to chrome storage
+      chrome.storage.local.get(null, function (data) {
+        data.active = val;
+        chrome.storage.local.set(data);
+        setActiveSite(data.active);
+      });
+    });
 
   })
 })(jQuery);
