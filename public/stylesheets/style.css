@@ -246,6 +246,9 @@ th {
 html {
   font-size: 62.5%;
 }
+body {
+  overflow: scroll;
+}
 .row {
   margin: 10px 0;
   display: flex;

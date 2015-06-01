@@ -28,14 +28,50 @@
       });
 
       $siteSelect.html(options);
-      setActiveSite(data.active);
+
+      if (data && data.active) {
+        setActiveSite(data.active);
+      }
     }
 
-    // Select the option with the site that matches the "active" key in chrome storage
-    function setActiveSite(activeSite) {
-      $siteSelect.find('option').filter(function() {
-        return $(this).text() === activeSite;
-      }).prop('selected', true);
+    function setActiveSite() {
+      chrome.storage.local.get(null, function (data) {
+        var activeSite = data.active;
+
+        // Select the option with the site that matches the "active" key in chrome storage
+        $siteSelect.find('option').filter(function() {
+          return $(this).text() === activeSite;
+        }).prop('selected', true);
+
+        // retrieve site data and fill inputs
+        $.each(data.site[activeSite].colors, function(key, value) {
+          $('input[name="' + key + '"]').val(value);
+
+          // if an input is not found, assume it's not a base color and create a new template
+          if (!$('input[name="' + key + '"]').length) {
+            createTemplate($baseColorsForm, 'color', key, value);
+          }
+        });
+      });
+    }
+
+    // TODO: Add clientside handlebars to handle templates. This is junk.
+    function createTemplate(form, type, key, value) {
+      var $appendAfter = form.find('.row:not(.no-append)').last();
+      var newRow       = '';
+
+      newRow += '<div class="row new">';
+
+      if (typeof key !== 'undefined' && typeof value !== 'undefined') {
+        newRow +=   '<input type="text" class="var-name" value="' + key + '">'
+               +    '<input type="tel" value="' + value + '" maxlength="6" class="' + type + '-val">'
+      } else {
+        newRow +=   '<input type="text" class="var-name" placeholder="some new ' + type + '">'
+               +    '<input type="tel" maxlength="6" class="' + type + '-val">'
+      }
+      newRow += '</div>';
+
+      $appendAfter.after(newRow);
     }
 
     $('.new-site-button').on('click', function() {
@@ -258,19 +294,28 @@
 
     // Click events
     $baseColorsForm.find('.update').on('click', function() {
-      $baseColorsForm.find('.new').each(function() {
-        var $this = $(this);
-        var key = makeKey($this.find('.var-name').val());
-        var val = $this.find('.color-val').val();
+      chrome.storage.local.get(null, function (data) {
+        var active = data.active
 
-        objTemplate.colors[key] = val;
+        if (typeof data.site[active].colors === 'undefined') {
+          data.site[active].colors = {};
+        }
 
-        chrome.storage.local.set(null, function (data) { console.info(data) });
+        $baseColorsForm.find('.new').each(function() {
+          var $this = $(this);
+          var key   = $this.find('.var-name').val() || $this.find('.var-name').text();
+          var val   = $this.find('.color-val').val();
 
+          console.log(key, val)
 
+          data.site[active].colors[key] = val;
 
-        $this.removeClass('new');
+          chrome.storage.local.set(data);
+
+          $this.removeClass('new');
+        });
       });
+
       updateColorList();
       generateSwatches($baseColorsForm.find('.row'));
       generateVarList();
@@ -292,17 +337,7 @@
     });
 
     $baseColorsForm.find('.add').on('click', function() {
-      var $appendAfter = $baseColorsForm.find('.row:not(.no-append)').last();
-
-      // TODO: Add clientside handlebars to handle templates
-      var newRow = '';
-      newRow    += '<div class="row new">'
-                +   '<input type="text" class="var-name" placeholder="Some other color">'
-                +   '<input type="tel" placeholder="efefef" maxlength="6" class="color-val">'
-                +  '</div>';
-
-      $appendAfter.after(newRow);
-
+      createTemplate($baseColorsForm, 'color');
     });
 
     $fontForm.find('.update').on('click', function() {
@@ -352,11 +387,6 @@ var objTemplate = {
     }
   }
 }
-
-// Simulate fetching from chrome storage
-$.each(objTemplate.colors, function(key, value) {
- $('input[name="' + key + '"]').val(value);
-})
 
 // forceNumeric() plug-in implementation
 jQuery.fn.forceNumeric = function () {
