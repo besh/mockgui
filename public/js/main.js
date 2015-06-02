@@ -5,6 +5,7 @@
     var $toggleBtn      = $('.toggle-mode');
     var $siteSelect     = $('.selected-site-name');
     var $colorSelect    = $('.color-select-val');
+    var $update         = $('.update');
 
     // Force num only on pixel value inputs
     $('.pixel-val, .rem-val').forceNumeric();
@@ -45,6 +46,7 @@
         }).prop('selected', true);
 
         $('input[class*="-val"]').val('');
+        $('.row.custom').remove();
 
         // retrieve site data and fill inputs
         if (data.site[activeSite].colors) {
@@ -63,9 +65,9 @@
           $.each(data.site[activeSite].fonts, function(key, value) {
             $('input[name="' + key + '"]').val(value);
 
-            $('select[name="' + key + '"]').find('option').filter(function() {
-              return $(this).text() === value;
-            }).prop('selected', true);
+            // $('select[name="' + key + '"]').find('option').filter(function() {
+            //   return $(this).text() === value;
+            // }).prop('selected', true);
 
             // if an input is not found, assume it's not a base font and create a new template
             // if (!$('input[name="' + key + '"]').length) {
@@ -73,7 +75,7 @@
             // }
           });
         }
-        $('.update').trigger('click');
+        $update.trigger('click');
 
       });
     }
@@ -83,7 +85,7 @@
       var $appendAfter = form.find('.row:not(.no-append)').last();
       var newRow       = '';
 
-      newRow += '<div class="row new">';
+      newRow += '<div class="row new custom">';
 
       if (typeof key !== 'undefined' && typeof value !== 'undefined') {
         newRow +=   '<input type="text" class="var-name" value="' + key + '">'
@@ -128,22 +130,25 @@
     }
 
     function updateColorList() {
-      var options      = '';
+      chrome.storage.local.get(null, function (data) {
+        var activeSite = data.active;
+        var options = '';
+        if (data.site[activeSite].colors) {
+          $.each(data.site[activeSite].colors, function(key, value) {
+            if (key !== '' && value !== '') {
+              options += '<option value="' + key + '">' + key + '</option>';
+            }
+          });
+          $colorSelect.html(options);
 
-      $baseColorsForm.find('.var-name').each(function() {
-        var $this = $(this);
-        var label = $this.text() || $this.val();
-        var val   = $this.next('.color-val').val();
-
-        if (val === '' || typeof val === 'undefined') {
-          options = options;
-        } else {
-          options += '<option value="' + label + '">' + label + '</option>';
+          // Update color select boxes with active selected color
+          $.each(data.site[activeSite].fonts, function(key, value) {
+            $('select[name="' + key + '"]').find('option').filter(function() {
+              return $(this).text() === value;
+            }).prop('selected', true);
+          });
         }
-
       });
-
-      $colorSelect.html(options);
     }
 
     function generateFonts(row) {
@@ -305,7 +310,7 @@
       }
     });
 
-    $baseColorsForm.find('.update').on('click', function() {
+    $update.on('click', function() {
       chrome.storage.local.get(null, function (data) {
         var active = data.active
 
@@ -357,6 +362,8 @@
     $(document).on('keyup', '.color-val, .rem-val, .font-val', function() {
       var $this = $(this);
 
+      $update.removeClass('disabled');
+
       if (!$this.parent('.row').hasClass('new')) {
         $this.parent('.row').addClass('new');
       }
@@ -372,6 +379,9 @@
 
     $colorSelect.on('change', function() {
       var $this = $(this);
+
+      $update.removeClass('disabled');
+
       if (!$this.parent('.row').hasClass('new')) {
         $this.parent('.row').addClass('new');
       }
@@ -379,11 +389,6 @@
 
     $baseColorsForm.find('.add').on('click', function() {
       createTemplate($baseColorsForm, 'color');
-    });
-
-    $fontForm.find('.update').on('click', function() {
-      generateFonts($fontForm.find('.row'));
-      generateVarList();
     });
 
     // Toggle the mode between create and editing
@@ -408,6 +413,16 @@
     });
 
   })
+
+$(window).on('beforeunload', function() {
+    var x =logout();
+    return x;
+});
+function logout(){
+        jQuery.ajax({
+        });
+        return 1+3;
+}
 })(jQuery);
 
 var objTemplate = {
@@ -455,3 +470,4 @@ jQuery.fn.forceNumeric = function () {
     });
   });
 }
+

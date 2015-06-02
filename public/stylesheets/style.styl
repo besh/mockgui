@@ -28,6 +28,26 @@ body {
   padding: 5px;
 }
 
+.update {
+  transition: all .23s;
+  width: 100px;
+  text-align: center;
+  border-radius: 5px;
+  letter-spacing: 3px;
+  border: none;
+  border-bottom: 2px solid #CE0950;
+  background: #DA5D5D;
+  color: rgba(255, 255,255, 0.7);
+  pointer-events: all;
+  cursor: pointer;
+  &.disabled {
+    border: none;
+    background: #ddd;
+    color: #aaa;
+    pointer-events: none;
+  }
+}
+
 .flex {
   display: flex;
   &.space-between {
@@ -35,6 +55,9 @@ body {
   }
   &.wrap {
     flex-wrap: wrap;
+  }
+  &.end {
+    justify-content: flex-end;
   }
 }
 
@@ -58,7 +81,7 @@ h1 {
 }
 
 #container {
-  padding: 0 5%;
+  padding: 0 2%;
 }
 
 .add {
@@ -130,6 +153,7 @@ select {
   margin: 0;
   width: 20%;
   transition: all .23s;
+  z-index: 1;
   &.on {
     left: 0;
     &+ .forms {
@@ -218,6 +242,9 @@ select {
 .forms {
   transition: all .23s;
   padding-top: 20px;
+  section {
+    padding: 0 10px;
+  }
 }
 
 .tools {
