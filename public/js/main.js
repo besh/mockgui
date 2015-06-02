@@ -4,6 +4,7 @@
     var $fontForm       = $('#base-fonts');
     var $toggleBtn      = $('.toggle-mode');
     var $siteSelect     = $('.selected-site-name');
+    var $colorSelect    = $('.color-select-val');
 
     // Force num only on pixel value inputs
     $('.pixel-val, .rem-val').forceNumeric();
@@ -57,7 +58,23 @@
           });
         }
 
+        // TODO: Super redundant. Iterate through keys under the active site and pass root key down the chain
+        if (data.site[activeSite].fonts) {
+          $.each(data.site[activeSite].fonts, function(key, value) {
+            $('input[name="' + key + '"]').val(value);
+
+            $('select[name="' + key + '"]').find('option').filter(function() {
+              return $(this).text() === value;
+            }).prop('selected', true);
+
+            // if an input is not found, assume it's not a base font and create a new template
+            // if (!$('input[name="' + key + '"]').length) {
+            //   createTemplate($baseColorsForm, 'color', key, value);
+            // }
+          });
+        }
         $('.update').trigger('click');
+
       });
     }
 
@@ -112,7 +129,6 @@
 
     function updateColorList() {
       var options      = '';
-      var $colorSelect = $('.color-select-val');
 
       $baseColorsForm.find('.var-name').each(function() {
         var $this = $(this);
@@ -127,20 +143,7 @@
 
       });
 
-      // $colorSelect.each(function() {
-      //   var selected = $(this).val();
-      //   $(this).attr('data-old-val', selected);
-      // });
-
       $colorSelect.html(options);
-
-      // $colorSelect.each(function() {
-      //   $(this).filter(function(){
-      //     // console.log(this.value)
-      //     // console.log($(this).attr('data-old-val'))
-      //     return this.value === $(this).attr('data-old-val');
-      //   }).prop('selected', true);
-      // });
     }
 
     function generateFonts(row) {
@@ -311,6 +314,10 @@
           data.site[active].colors = {};
         }
 
+        if (typeof data.site[active].fonts === 'undefined') {
+          data.site[active].fonts = {};
+        }
+
         // Find any new color vals and save them to chrome storage
         $baseColorsForm.find('.new').each(function() {
           var $this = $(this);
@@ -318,23 +325,42 @@
           var val   = $this.find('.color-val').val();
 
           data.site[active].colors[key] = val;
+
+          if (val === '') {
+            delete data.site[active].colors[key]
+          }
+
           chrome.storage.local.set(data);
           $this.removeClass('new');
         });
-      });
 
-      $('.generated-gui').addClass('on');
-      updateColorList();
-      generateSwatches($baseColorsForm.find('.row'));
-      generateVarList();
+        $fontForm.find('.new').each(function() {
+          var $this = $(this);
+          var key   = $this.find('.var-name').val() || $this.find('.var-name').text();
+          var val   = $this.find('[class*="-val"]').val();
+
+          console.log(val)
+
+          data.site[active].fonts[key] = val;
+          chrome.storage.local.set(data);
+          $this.removeClass('new');
+        });
+
+        $('.generated-gui').addClass('on');
+        updateColorList();
+        generateSwatches($baseColorsForm.find('.row'));
+        generateVarList();
+
+      });
     });
 
-    $('.color-val').on('keyup', function() {
+    $(document).on('keyup', '.color-val, .rem-val, .font-val', function() {
       var $this = $(this);
 
       if (!$this.parent('.row').hasClass('new')) {
         $this.parent('.row').addClass('new');
       }
+
       if ($this.val().length === 3 || $this.val().length === 6) {
         $this.attr('style', '').css('background-color', '#' + $this.val());
       }
@@ -344,16 +370,19 @@
       }
     });
 
+    $colorSelect.on('change', function() {
+      var $this = $(this);
+      if (!$this.parent('.row').hasClass('new')) {
+        $this.parent('.row').addClass('new');
+      }
+    });
+
     $baseColorsForm.find('.add').on('click', function() {
       createTemplate($baseColorsForm, 'color');
     });
 
     $fontForm.find('.update').on('click', function() {
       generateFonts($fontForm.find('.row'));
-      generateVarList();
-    });
-
-    $('#create-var-list').on('click', function() {
       generateVarList();
     });
 
