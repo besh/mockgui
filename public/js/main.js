@@ -414,15 +414,6 @@
 
   })
 
-$(window).on('beforeunload', function() {
-    var x =logout();
-    return x;
-});
-function logout(){
-        jQuery.ajax({
-        });
-        return 1+3;
-}
 })(jQuery);
 
 var objTemplate = {
