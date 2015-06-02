@@ -134,6 +134,7 @@
         var activeSite = data.active;
         var options = '';
         if (data.site[activeSite].colors) {
+          options += '<option value="">None</option>';
           $.each(data.site[activeSite].colors, function(key, value) {
             if (key !== '' && value !== '') {
               options += '<option value="' + key + '">' + key + '</option>';
@@ -344,8 +345,6 @@
           var key   = $this.find('.var-name').val() || $this.find('.var-name').text();
           var val   = $this.find('[class*="-val"]').val();
 
-          console.log(val)
-
           data.site[active].fonts[key] = val;
           chrome.storage.local.set(data);
           $this.removeClass('new');
@@ -354,6 +353,7 @@
         $('.generated-gui').addClass('on');
         updateColorList();
         generateSwatches($baseColorsForm.find('.row'));
+        generateFonts($fontForm.find('.row'));
         generateVarList();
 
       });
@@ -415,25 +415,6 @@
   })
 
 })(jQuery);
-
-var objTemplate = {
-  "colors": {
-    "primary_color" : "efefef",
-    "secondary_color" : "000"
-  },
-  "font_family": "helvetica",
-  "font_sizes": {
-    "small": '1rem',
-    "regular": '1.3rem'
-  },
-  "form_fields": {
-    "color": "seondary",
-    "border": {
-      "color": "primary",
-      "size": "1px"
-    }
-  }
-}
 
 // forceNumeric() plug-in implementation
 jQuery.fn.forceNumeric = function () {

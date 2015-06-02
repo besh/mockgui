@@ -149,6 +149,7 @@ select {
   position: absolute;
   left: -30%;
   background: #1d1f20;
+  box-shadow: 1px 0px 7px rgba(0, 0, 0, .2);
   height: 100%;
   margin: 0;
   width: 20%;
@@ -162,11 +163,18 @@ select {
   }
   h2 {
     padding: 10px;
-    color: white;
-    font-size: 1.6rem;
+    color: #777;
+    font-size: 1.3rem;
     font-weight: normal;
-    background: #111;
-    margin: 0;
+    background: #121212;
+    margin: 20px 0 0 0;
+    letter-spacing: 3px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+    &:first-of-type {
+      border-top: none;
+      margin-top: 0;
+    }
   }
 }
 
