@@ -2,6 +2,7 @@
   $(document).ready(function() {
     var $baseColorsForm = $('#base-colors');
     var $fontForm       = $('#base-fonts');
+    var $btnInputsForm  = $('#buttons-inputs-form');
     var $toggleBtn      = $('.toggle-mode');
     var $siteSelect     = $('.selected-site-name');
     var $colorSelect    = $('.color-select-val');
@@ -64,15 +65,12 @@
         if (data.site[activeSite].fonts) {
           $.each(data.site[activeSite].fonts, function(key, value) {
             $('input[name="' + key + '"]').val(value);
+          });
+        }
 
-            // $('select[name="' + key + '"]').find('option').filter(function() {
-            //   return $(this).text() === value;
-            // }).prop('selected', true);
-
-            // if an input is not found, assume it's not a base font and create a new template
-            // if (!$('input[name="' + key + '"]').length) {
-            //   createTemplate($baseColorsForm, 'color', key, value);
-            // }
+        if (data.site[activeSite].buttons_inputs) {
+          $.each(data.site[activeSite].buttons_inputs, function(key, value) {
+            $('input[name="' + key + '"]').val(value);
           });
         }
         $update.trigger('click');
@@ -142,8 +140,15 @@
           });
           $colorSelect.html(options);
 
+          // TODO : more redundancy
           // Update color select boxes with active selected color
           $.each(data.site[activeSite].fonts, function(key, value) {
+            $('select[name="' + key + '"]').find('option').filter(function() {
+              return $(this).text() === value;
+            }).prop('selected', true);
+          });
+
+          $.each(data.site[activeSite].buttons_inputs, function(key, value) {
             $('select[name="' + key + '"]').find('option').filter(function() {
               return $(this).text() === value;
             }).prop('selected', true);
@@ -324,6 +329,11 @@
           data.site[active].fonts = {};
         }
 
+        if (typeof data.site[active].buttons_inputs === 'undefined') {
+          data.site[active].buttons_inputs = {};
+        }
+
+        // TODO: Super redundant. These three chunks can be simplified
         // Find any new color vals and save them to chrome storage
         $baseColorsForm.find('.new').each(function() {
           var $this = $(this);
@@ -336,7 +346,7 @@
             delete data.site[active].colors[key]
           }
 
-          chrome.storage.local.set(data);
+          // chrome.storage.local.set(data);
           $this.removeClass('new');
         });
 
@@ -346,10 +356,24 @@
           var val   = $this.find('[class*="-val"]').val();
 
           data.site[active].fonts[key] = val;
-          chrome.storage.local.set(data);
+          // chrome.storage.local.set(data);
           $this.removeClass('new');
         });
 
+        $btnInputsForm.find('.new').each(function() {
+          var $this = $(this);
+
+          $this.find('[class*="-val"]').each(function() {
+            var $el   = $(this);
+            var key   = $el.attr('name');
+            var val   = $el.val();
+            data.site[active].buttons_inputs[key] = val;
+          });
+
+          $this.removeClass('new');
+        });
+        console.log(data)
+        chrome.storage.local.set(data);
         $('.generated-gui').addClass('on');
         updateColorList();
         generateSwatches($baseColorsForm.find('.row'));
@@ -412,7 +436,7 @@
       $('.output').toggleClass('on');
     });
 
-  })
+  });
 
 })(jQuery);
 
